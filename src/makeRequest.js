@@ -1,5 +1,3 @@
-// make_request
-// ------------------------------------
 function chooseCategory(userID) {
     var category_keyboard = {
         inline_keyboard: [
@@ -46,40 +44,13 @@ function chooseCategory(userID) {
 }
 
 function giveCredit(userID, data) {
-            // data - category-dabao
     var data_arr = data.split("-");
-            // dabao
-    var category = data_arr[1];
-            
-    var curr_user = userExists(userID);
-    var credits = curr_user.total_credits;
-            
-    var keyboard_1 = {
-        inline_keyboard: [
-            [
-            {
-                text: '1',
-                 // credit-dabao 1
-                callback_data: 'credit-' + category + ' 1',
-            },
-            ],
-            [
-            {
-                text: '2',
-                callback_data: 'credit-' + category + ' 2',
-            },
-            ],
-            [
-            {
-                text: '3',
-                callback_data: 'credit-' + category + ' 3',
-            },
-            ],
-        ],
-    };
+    var category = data_arr[1];            
+    var user = userInfo(userID);
+    var credits = user.total_credits;
     
     var keyboard = [];
-    for (i = 1; i <= credits; i++) {
+    for (i = 1; i <= credits && i <= 3; i++) {
           keyboard[i - 1] = [
               {
                 text: i,
@@ -87,16 +58,7 @@ function giveCredit(userID, data) {
               },
           ];
     }
-      
-    var keyboard_2 = {
-      inline_keyboard: keyboard,
-    };
-              
-    if (credits >= 3) {
-        sendText(userID, 'How many credits?', keyboard_1);
-    } else {
-        sendText(userID, 'How many credits?', keyboard_2);
-    }
+    sendText(userID, 'How many credits?', {inline_keyboard: keyboard});
 }
 
 function addRemark(userID, data) {
@@ -123,42 +85,29 @@ function addRemark(userID, data) {
 }
                 
 function makeRequest(userID, data, remark) {
-    var users_sheet = SpreadsheetApp.openById(sheet_id).getSheetByName('Users');
-    var active_request_sheet = SpreadsheetApp.openById(sheet_id).getSheetByName('Active_Request');
-    var rangeData = active_request_sheet.getDataRange();
-    var lastRow = rangeData.getLastRow();
-
-    var curr_user = userExists(userID);
-    var total_credits = curr_user.total_credits;
+    var user = userInfo(userID);
+    var total_credits = user.total_credits;
+    var new_ref = requestLastRow();
+    var listOfSubs = subscribedUsers();
 
     var data_arr = data.split('-');
     var category_number_remark = data_arr[1];
     var request = category_number_remark.split(' ')[0];
     var deducted_credit = category_number_remark.split(' ')[1];
-    var remark_placeholder = '-';
 
     var new_credits = parseInt(total_credits) - parseInt(deducted_credit);
-      
-    var status = 'Available'    
     var now = currentDateTime();
 
-    active_request_sheet.appendRow([lastRow, request, deducted_credit, userID, status, now[0], now[1], remark_placeholder, deducted_credit]);
-    // update the user's new credits after minus the credits used
-    var userRow = findUserRow(userID);
-    
-    users_sheet.getRange(userRow, 4).setValue(new_credits);
-  
-    var listOfSubs = subscribedUsers();
+    newRequest(new_ref, request, deducted_credit, userID, "Available", now[0], now[1], "-", deducted_credit);
+    setUserCredits(userID, new_credits);  
 
     if (remark === 0) {
-      sendText(userID, 'Request made: ' + request + ' \n' + new_credits + ' credit(s)' +'\nRef number: ' + lastRow);
+      sendText(userID, 'Request made: ' + request + ' \n' + deducted_credit + ' credit(s)' +'\nRef number: ' + new_ref);
       for (i = 0; i < listOfSubs.length; i++) {        
         if (listOfSubs[i] !== userID) {
-            var data = userExists(userID);
-            var name = data.name;
-            sendText(listOfSubs[i], 'Request made by ' + name + ': ' + request + ' \n' + new_credits + ' credit(s)' +'\nRef number: ' + lastRow);
+            var user = userInfo(userID);
+            sendText(listOfSubs[i], 'Request made by ' + user.name + ': ' + request + ' \n' + deducted_credit + ' credit(s)' +'\nRef number: ' + new_ref);
         }
       }
     }
 }
-// ------------------------------------
