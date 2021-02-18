@@ -58,6 +58,15 @@ function setUserSubscribe(userId, state) {
   }
 }
 
+function setUserOngoing(userId, state) {
+  for (j = 0; j < usersLastRow - 1; j++) {
+    if (usersRangeValues[j][0] === userId) {
+      Users.getRange(j + 2, 8).setValue(state);
+      return;
+    }
+  }
+}
+
 function setRequestStatus(refId, stat) {
   Requests.getRange(refId + 1, 5).setValue(stat);
 }
@@ -68,6 +77,23 @@ function setRequestPending(refId, pend) {
 
 function setRequestSlave(refId, slaveId) {
   Requests.getRange(refId + 1, 10).setValue(slaveId);
+}
+
+function setRequestRemark(refId, stat) {
+  Requests.getRange(refId + 1, 8).setValue(stat);
+}
+
+function setRequestString(refId, stat) {
+  Requests.getRange(refId + 1, 11).setValue(stat);
+}
+
+function getLastUserRequest(userId) {  
+  for (i = requestsLastRow - 2; i >= 0; i--) {
+    if (requestsRangeValues[i][3] === userId) {
+        return requestInfo(parseInt(requestsRangeValues[i][0]));
+    }
+  }  
+  return false;
 }
 
 function getView() {
@@ -89,6 +115,8 @@ function userInfo(userId) {
       user.total_credits = parseInt(usersRangeValues[j][3]);
       user.simp_count = parseInt(usersRangeValues[j][4]);
       user.subscribed = usersRangeValues[j][5];
+      user.tele = usersRangeValues[j][6];
+      user.ongoing = usersRangeValues[j][7];
       break;
     }
   }
@@ -121,9 +149,9 @@ function requestInfo(refId) {
 }
 
 function newUser(userId, name, room) {
-  Users.appendRow([userId, name, room, 5, 0, 'No']);
+  Users.appendRow([userId, name, room, 5, 0, 'No', "fix", "0"]);
 }
 
-function newRequest(refId, request, credits, userId, status, date, time, remark, pend) {
-  Requests.appendRow([refId, request, credits, userId, status, date, time, remark, pend]);
+function newRequest(refId, request, credits, userId, status, date, time, remark, pend, slave, str) {
+  Requests.appendRow([refId, request, credits, userId, status, date, time, remark, pend, slave, str]);
 }
