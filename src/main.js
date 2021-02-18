@@ -1,6 +1,6 @@
-var TOKEN = '';
+var TOKEN = '1661881921:AAHe0rz_r4ojgH-Y-sgt6f4imCQeIDKyjXE';
 var telegramUrl = "https://api.telegram.org/bot" + TOKEN;
-var webAppUrl = '';
+var webAppUrl = 'https://script.google.com/macros/s/AKfycbzzA--5BV3_y-4orKG0zCQQyY96HgCQkRmc66uKMkTcrUMJE3Jh-uEG/exec';
 
 function doPost(e) {
     var contents = JSON.parse(e.postData.contents);
@@ -15,17 +15,11 @@ function doPost(e) {
       if (command === 'category') {
         giveCredit(idCallback, data);
       } else if (command === 'credit') {
-        addRemark(idCallback, data);
+        setUserOngoing(userID, "1");    
+        sendText(userID, 'Please key in a remark/details!');     
+        makeRequest(idCallback, data);       
       } else if (command === 'cancel') {
         sendText(idCallback, cancelRequest(data.split('-')[1], userID));
-      } else if (command === 'remark') {
-        var rem = data.split('-')[1].split(' ')[2];
-        if (rem === "0") { 
-          makeRequest(idCallback, data, 0);
-        } else {
-          sendText(userID, 'Please key in "/remark YourRemark"!');
-          makeRequest(idCallback, data, 1);
-        }
       } else if (command === 'take_request') {
         takeRequest(idCallback, data);
       } else if (command === 'complete') {
@@ -51,7 +45,7 @@ function doPost(e) {
         } else {
           sendText(userId, "You are not registered, to sign up use /register");
         }
-      } else if (text === '/start') {
+      } else if (text === '/start' || text === '/help') {
         sendText(
           chatID,
           "Welcome to Eusoff's Favours Bot! \nTo sign up /register \n" +
@@ -86,22 +80,6 @@ function doPost(e) {
         } else {
             sendText(chatID, 'Which request do you want to mark as complete?', viewOwnTaken(userId));
         }
-      } else if (text.slice(0, 7) === '/remark') {
-        var active_request_sheet = SpreadsheetApp.openById(sheet_id).getSheetByName('Active_Request');
-        var info = locateFinalUserCredit(userId);
-        active_request_sheet.getRange(info[0], 8).setValue(text.slice(7));    
-        
-        var listOfSubs = subscribedUsers();
-        
-        sendText(userId, 'Request made: ' + info[1] + ' \n' + info[2] + ' credit(s)\nRef number: ' + (parseInt(info[3]) - 2) + '\nRemark: ' + text.slice(7));
-        for (i = 0; i < listOfSubs.length; i++) {        
-          if (listOfSubs[i] !== userId) {
-            var data = userInfo(userId);
-            var name = data.name;
-            sendText(listOfSubs[i], 'Request made by ' + name + ': ' + info[1] + ' \n' + info[2] + ' credit(s)\nRef number: ' + (parseInt(info[3]) - 2) + '\nRemark: ' + text.slice(7));
-          }
-        }
-        
       } else if (text === '/subscribe') {
         setUserSubscribe(userId, "Yes");        
         sendText(userId, "Successfully subscribed to Favours Bot. You will be notified whenever a new favour is requested!");      
@@ -133,8 +111,10 @@ function doPost(e) {
       } else {
         if (check_name_room_validity(text)) {
           addUser(contents);
+        } else if (userInfo(userId).ongoing === 1) {
+          broadcast(userId, text);
         } else {
-          sendText(chatID, 'Invalid');
+          sendText(chatID, 'Invalid! 🥴');
         }
       }
     }
@@ -150,25 +130,6 @@ function deleteWebhook() {
     var response = UrlFetchApp.fetch(url);
 }
 
-function locateFinalUserCredit(userID) {  
-    var active_request_sheet = SpreadsheetApp.openById(sheet_id).getSheetByName('Active_Request');
-    var rangeData = active_request_sheet.getDataRange();
-    var lastRow = rangeData.getLastRow();
-    var lastColumn = rangeData.getLastColumn();
-    
-    var searchRange = active_request_sheet.getRange(2, 1, lastRow, 4);
-    var rangeValues = searchRange.getValues();
-  
-    for (i = lastRow - 1; i > 0; i--) {
-        if (rangeValues[i][3] === userID) {
-            var row = parseInt(i) + 2;
-            var ref = rangeValues[i][0];
-            var request = rangeValues[i][1];
-            var credit = rangeValues[i][2];          
-            return [row, request, credit, ref];          
-        }
-    }  
-}
 
 function currentDateTime() {
     var dateObj = new Date();
