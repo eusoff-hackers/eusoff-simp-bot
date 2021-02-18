@@ -1,6 +1,6 @@
-var TOKEN = '1661881921:AAHe0rz_r4ojgH-Y-sgt6f4imCQeIDKyjXE';
+var TOKEN = '';
 var telegramUrl = "https://api.telegram.org/bot" + TOKEN;
-var webAppUrl = 'https://script.google.com/macros/s/AKfycbzzA--5BV3_y-4orKG0zCQQyY96HgCQkRmc66uKMkTcrUMJE3Jh-uEG/exec';
+var webAppUrl = '';
 
 function doPost(e) {
     var contents = JSON.parse(e.postData.contents);
