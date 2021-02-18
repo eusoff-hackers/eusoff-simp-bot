@@ -54,7 +54,7 @@ function broadcast(userId, remark) {
   var listOfSubs = subscribedUsers();  
   var user = userInfo(userId);
 
-  var str = req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + user.name + " at " + req.time + ", " + req.date + "\nRemark: " + remark + "\n\n";
+  var str = req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + remark + "\n\n";
 
   setRequestString(req.ref, str);
   setRequestRemark(req.ref, remark);  
