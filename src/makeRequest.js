@@ -9,12 +9,6 @@ function chooseCategory(userID) {
           ],
           [
             {
-              text: 'Collect Laundry',
-              callback_data: 'category-Collect_Laundry',
-            },
-          ],
-          [
-            {
               text: 'Borrow Item',
               callback_data: 'category-Borrow_Item',
             },
@@ -23,12 +17,6 @@ function chooseCategory(userID) {
             {
               text: 'Open Gate',
               callback_data: 'category-Open_Gate',
-            },
-          ],
-          [
-            {
-              text: 'Distract Barbara',
-              callback_data: 'category-Distract_Barbara',
             },
           ],
           [
@@ -61,53 +49,42 @@ function giveCredit(userID, data) {
     sendText(userID, 'How many credits?', {inline_keyboard: keyboard});
 }
 
-function addRemark(userID, data) {
-    var data_arr = data.split("-");
-    var category_number = data_arr[1];
-    var remark_keyboard = {
-        inline_keyboard: [
-              [
-              {
-                  text: 'Yes',
-                  callback_data: 'remark-' + category_number + ' 1',
-              },
-              ],
-              [
-              {
-                  text: 'No',
-                  callback_data: 'remark-' + category_number + ' 0',
-              },
-              ],
-            ],
-        };           
-    
-    sendText(userID, 'Do you want to add any remarks?', remark_keyboard);
+function broadcast(userId, remark) {     
+  var req = getLastUserRequest(userId);
+  var listOfSubs = subscribedUsers();  
+  var user = userInfo(userId);
+
+  var str = req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + user.name + " at " + req.time + ", " + req.date + "\nRemark: " + remark + "\n\n";
+
+  setRequestString(req.ref, str);
+  setRequestRemark(req.ref, remark);  
+  setUserOngoing(userId, "0");  
+
+  if (req === false) {
+    sendText(userId, "Invalid!");
+  } 
+
+  sendText(userId, 'Request made: ' + req.request + ' \n' + req.credits + ' credit(s)\nRef number: ' + req.ref + '\nRemark: ' + remark);
+
+  var submsg = 'Request made by ' + user.name + ' (' + user.room + ') : ' + req.request + ' \n' + req.credits + ' credit(s)' +'\nRef number: ' + req.ref + '\nRemark: ' + remark;
+
+  for (i = 0; i < listOfSubs.length; i++) { 
+    if (listOfSubs[i] !== userId) {
+      sendText(parseInt(listOfSubs[i]), submsg);
+    }
+  }
 }
                 
-function makeRequest(userID, data, remark) {
+function makeRequest(userID, data) {
     var user = userInfo(userID);
     var total_credits = user.total_credits;
     var new_ref = requestLastRow();
-    var listOfSubs = subscribedUsers();
-
     var data_arr = data.split('-');
     var category_number_remark = data_arr[1];
     var request = category_number_remark.split(' ')[0];
     var deducted_credit = category_number_remark.split(' ')[1];
-
     var new_credits = parseInt(total_credits) - parseInt(deducted_credit);
     var now = currentDateTime();
-
-    newRequest(new_ref, request, deducted_credit, userID, "Available", now[0], now[1], "-", deducted_credit);
-    setUserCredits(userID, new_credits);  
-
-    if (remark === 0) {
-      sendText(userID, 'Request made: ' + request + ' \n' + deducted_credit + ' credit(s)' +'\nRef number: ' + new_ref);
-      for (i = 0; i < listOfSubs.length; i++) {        
-        if (listOfSubs[i] !== userID) {
-            var user = userInfo(userID);
-            sendText(listOfSubs[i], 'Request made by ' + user.name + ': ' + request + ' \n' + deducted_credit + ' credit(s)' +'\nRef number: ' + new_ref);
-        }
-      }
-    }
+    newRequest(new_ref, request, deducted_credit, userID, "Available", now[0], now[1], "-", deducted_credit, "", "");
+    setUserCredits(userID, new_credits);
 }
