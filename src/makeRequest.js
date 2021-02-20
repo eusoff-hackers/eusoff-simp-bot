@@ -85,6 +85,6 @@ function makeRequest(userID, data) {
     var deducted_credit = category_number_remark.split(' ')[1];
     var new_credits = parseInt(total_credits) - parseInt(deducted_credit);
     var now = getDateTime();
-    newRequest(new_ref, request, deducted_credit, userID, "Available", now.ewDate, now.ewTime, "-", 0, "", "");
+    newRequest(new_ref, request, deducted_credit, userID, "Available", now.date + 'Ew', now.time + 'Ew', "-", 0, "", "");
     setUserCredits(userID, new_credits);
 }
