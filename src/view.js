@@ -59,14 +59,16 @@ function getTestView(index) {
     var str = 'Showing Active Requests\n\n';
     var count = 0;
     var max = 3;
-  
+
     for (i = 0; i < requestLastRow() - 1; i++) {
       var req = requestInfo(rangeValues[i][0]);
       var user = userInfo(req.userId);
-    
+
       if (req.status === "Available") {
         if (count >= index*max && count < (index*max + max)) { 
-          str += req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + req.remark + "\n\n";
+          str += req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + 
+          user.  name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + 
+          req.remark + "\n" + "Take Request: /t_" + req.ref + "\nSimp: /s_" + req.ref + "\n\n";
         }
         count++;
       }
