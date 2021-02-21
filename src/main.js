@@ -1,7 +1,3 @@
-var TOKEN = '1661881921:AAHe0rz_r4ojgH-Y-sgt6f4imCQeIDKyjXE';
-var telegramUrl = "https://api.telegram.org/bot" + TOKEN;
-var webAppUrl = 'https://script.google.com/macros/s/AKfycbzzA--5BV3_y-4orKG0zCQQyY96HgCQkRmc66uKMkTcrUMJE3Jh-uEG/exec';
-
 function doPost(e) {
     var contents = JSON.parse(e.postData.contents);
   
@@ -99,6 +95,12 @@ function doPost(e) {
           } else {
             sendText(chatID, 'Which request do you want to take?', processSimpRequest(userId));
           }
+      } else if (text.slice(0, 3) === '/t_') {
+        var ref = parseInt(text.substr(3));
+        takeRequestTest(userId, ref);
+      } else if (text.slice(0, 3) === '/s_') {
+        var ref = parseInt(text.substr(3));
+        takeSimpRequestTest(userId, ref)
       } else if (text === '/check') {
         var data = userInfo(userId);
         var credits = data.total_credits;
@@ -120,7 +122,7 @@ function doPost(e) {
           sendText(chatID, 'Invalid! 🥴');
         }
       }
-    }
+    } 
 }
 
 function setWebhook() {
