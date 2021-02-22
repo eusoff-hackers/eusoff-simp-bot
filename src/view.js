@@ -67,7 +67,7 @@ function getTestView(index) {
       if (req.status === "Available") {
         if (count >= index*max && count < (index*max + max)) { 
           str += req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + 
-          user.  name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + 
+          user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + 
           req.remark + "\n" + "Take Request: /t_" + req.ref + "\nSimp: /s_" + req.ref + "\n\n";
         }
         count++;
