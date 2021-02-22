@@ -6,10 +6,19 @@ function register(userID) {
       text =
         "Welcome to Eusoff Favours Bot. You do not exist in our system yet. Let's change that." +
         '\n\n' +
-        '<b> What is your name and room number? </b>';
+        '<b> What is your name, room number, and telegram handle? </b>';
       sendText(userID, text);
       text =
-        'Please input in the format: <b> Name A101 </b>, for example: John A101';
+        'Please input in the format: <b> Name RoomNo @tele_handle </b>, for example: John A101 @johnsmith98';
+    } else if (Object.getOwnPropertyNames(user).length != 0 && user.tele_handle == null) {
+      text =
+        "Something's wrong with your telegram handle. Please update it." +
+        "\n\n" +
+        "<b> What is your updated Telegram handle? </b>";
+        sendText(userID, text);
+        text = 
+          "Please input in the format: @tele_handle \n" + 
+          "eg. @johnsmith2000";
     } else {
       text =
         'Welcome back ' +
@@ -39,9 +48,10 @@ function addUser(data) {
 
     var name = user_data_arr[0];
     var room = user_data_arr[1];
+    var tele_handle = user_data_arr[2];
     var id = data.message.chat.id;
   
-    newUser(id, name, room);
+    newUser(id, name, room, tele_handle);
     addUserToTrack(id);
   
     var text =
