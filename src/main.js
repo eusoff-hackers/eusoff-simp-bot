@@ -1,7 +1,3 @@
-var TOKEN = "1639182456:AAEkBimEZxq4zCPC7F19SqFSUWZGJ3_vyoc";
-var telegramUrl = "https://api.telegram.org/bot" + TOKEN;
-var webAppUrl = "https://script.google.com/macros/s/AKfycbwb0bhm9AJy0sl8Hn9pZw0VwiWiOUNR8ZwRg1QKf-UsZPVSyUpDD1jzjg/exec";
-
 function doPost(e) {
     var contents = JSON.parse(e.postData.contents);
   
