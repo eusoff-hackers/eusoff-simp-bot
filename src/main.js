@@ -1,7 +1,3 @@
-var TOKEN = '1661881921:AAHe0rz_r4ojgH-Y-sgt6f4imCQeIDKyjXE';
-var telegramUrl = "https://api.telegram.org/bot" + TOKEN;
-var webAppUrl = 'https://script.google.com/macros/s/AKfycbzzA--5BV3_y-4orKG0zCQQyY96HgCQkRmc66uKMkTcrUMJE3Jh-uEG/exec';
-
 function doPost(e) {
     var contents = JSON.parse(e.postData.contents);
   
@@ -21,6 +17,7 @@ function doPost(e) {
         makeRequest(idCallback, data);       
       } else if (command === 'cancel') {
         sendText(idCallback, cancelRequest(data.split('-')[1], userID));
+        sendMenu(userID);
       } else if (command === 'take_request') {
         takeRequest(idCallback, data);
       } else if (command === 'complete') {
@@ -29,6 +26,8 @@ function doPost(e) {
         takeSimpRequest(idCallback, data);
       } else if (command === 'toggle') {
         updateView(idCallback, data, message_id);
+      } else if (command === 'back') {
+        updateText(idCallback, message_id, getMenu());
       }
 
     } else if (contents.message) {
@@ -49,25 +48,13 @@ function doPost(e) {
           sendText(userId, "You are not registered, to sign up use /register");
         }
       } else if (text === '/start' || text === '/help') {
-        sendText(
-          chatID,
-          "Welcome to Eusoff's Favours Bot! \nTo sign up /register \n" +
-          "To view active requests /view \n" + 
-          "To delete your current requests /cancel\n" +
-          "To mark a request as complete /complete\n\n" +
-          "To make request /make_request\n" + 
-          "To take request /take_request\n" + 
-          "To simp /simp\n" +
-          "To view the leaderboards /leaderboard\n\n" +
-          "To view the simp leaderboards /simp_leaderboard\n" + 
-          "To subscribe to favour updates /subscribe\n" + 
-          "To unsubscribe from updates /unsubscribe\n"
-          );
+        sendMenu(chatID);
       } else if (text === '/view') {
         view(userId);
       } else if (text === '/cancel') {
         if (viewOwn(userId) === false) {
             sendText(chatID, 'You have no requests to cancel');
+            sendMenu(userID);
         } else {
             sendText(chatID, 'Which request do you want to cancel?', viewOwn(userId));
         }
@@ -90,17 +77,33 @@ function doPost(e) {
         setUserSubscribe(userId, "No");        
         sendText(userId, "Unsubscribed :( Who hurt you?");        
       } else if (text === '/leaderboard') {
-        sendText(chatID, getLeaderboardRow(userID));
+        sendLeaderboard(chatID, userID);
       } else if (text === '/simp_leaderboard') {
-        sendText(chatID, getSimpLeaderboardRow(userID));
+        sendSimpLeaderboard(chatID, userID);
       } else if (text === '/simp') {
         if (processSimpRequest(userId) === false) {
             sendText(chatID, 'You have no requests to take');
           } else {
             sendText(chatID, 'Which request do you want to take?', processSimpRequest(userId));
           }
+      } else if (text.slice(0, 3) === '/t_') {
+        var ref = parseInt(text.substr(3));
+        takeRequestTest(userId, ref);
+      } else if (text.slice(0, 3) === '/s_') {
+        var ref = parseInt(text.substr(3));
+        takeSimpRequestTest(userId, ref)
       } else if (text === '/check') {
-        sendText(userId, check(userId));
+        var data = userInfo(userId);
+        var credits = data.total_credits;
+        var name = data.name;
+        var room = data.room;
+        var simp = data.simp_count;
+        if (credits === 0) {
+          sendText(userId, "Hi " + name + "(" + room + ") !" + "You have 0 credits:( Do some good! \nSimp Count: " + simp);
+        } else {
+          sendText(userId, "Hi " + name + "(" + room + ") !" + "You have " + credits + " credits!\nSimp Count: " + simp);
+        }
+        
       } else {
         if (check_name_room_validity(text)) {
           addUser(contents);
@@ -110,7 +113,7 @@ function doPost(e) {
           sendText(chatID, 'Invalid! 🥴');
         }
       }
-    }
+    } 
 }
 
 function setWebhook() {
@@ -135,6 +138,25 @@ function sendText(chatId, text, keyBoard) {
       },
     };
     return UrlFetchApp.fetch(telegramUrl + '/', data);
+}
+
+function getMenu() {
+  var str = "Welcome to Eusoff's Favours Bot! \nTo sign up /register \n" +
+          "To view active requests /view \n" + 
+          "To delete your current requests /cancel\n" +
+          "To mark a request as complete /complete\n\n" +
+          "To make request /make_request\n" + 
+          "To take request /take_request\n" + 
+          "To simp /simp\n" +
+          "To view the leaderboards /leaderboard\n\n" +
+          "To view the simp leaderboards /simp_leaderboard\n" + 
+          "To subscribe to favour updates /subscribe\n" + 
+          "To unsubscribe from updates /unsubscribe\n";
+  return str;
+}
+
+function sendMenu(chatID) {
+  sendText(chatID, getMenu());
 }
 
 function updateText(chat_id, message_id, text, keyBoard) {
