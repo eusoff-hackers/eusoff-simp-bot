@@ -1,3 +1,7 @@
+var TOKEN = "1639182456:AAEkBimEZxq4zCPC7F19SqFSUWZGJ3_vyoc";
+var telegramUrl = "https://api.telegram.org/bot" + TOKEN;
+var webAppUrl = "https://script.google.com/macros/s/AKfycbwb0bhm9AJy0sl8Hn9pZw0VwiWiOUNR8ZwRg1QKf-UsZPVSyUpDD1jzjg/exec";
+
 function doPost(e) {
     var contents = JSON.parse(e.postData.contents);
   
@@ -93,17 +97,7 @@ function doPost(e) {
         var ref = parseInt(text.substr(3));
         takeSimpRequestTest(userId, ref)
       } else if (text === '/check') {
-        var data = userInfo(userId);
-        var credits = data.total_credits;
-        var name = data.name;
-        var room = data.room;
-        var simp = data.simp_count;
-        if (credits === 0) {
-          sendText(userId, "Hi " + name + "(" + room + ") !" + "You have 0 credits:( Do some good! \nSimp Count: " + simp);
-        } else {
-          sendText(userId, "Hi " + name + "(" + room + ") !" + "You have " + credits + " credits!\nSimp Count: " + simp);
-        }
-        
+        sendText(userId, check(userId));
       } else {
         if (check_name_room_validity(text)) {
           addUser(contents);
@@ -231,3 +225,7 @@ function oppositeGender(userFloor, requestorFloor) {
         }
     }
 }
+
+
+
+
