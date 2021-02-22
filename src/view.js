@@ -1,30 +1,75 @@
-// view
 function view(userID) {
-    var sheet = SpreadsheetApp.openById(sheet_id).getSheetByName('Active_Request');
-    var rangeData = sheet.getDataRange();
-    var lastRow = rangeData.getLastRow();
-    var lastColumn = rangeData.getLastColumn();
+  var next = 1;
+  var keyboard = [
+          [
+            {
+              text: 'Next',
+              callback_data: 'toggle-' + next,
+            },
+          ],
+  ]
+  sendText(userID, getTestView(0), {inline_keyboard: keyboard});
+}
 
-    var searchRange = sheet.getRange(2, 1, lastRow - 1, lastColumn);
-    var rangeValues = searchRange.getValues();
+function updateView(userID, data, message_id) {
+  var data_arr = data.split('-');
+  var index = data_arr[1];
+  var previous = parseInt(index) - 1;
+  var next = parseInt(index) + 1;
+  var keyboard = [
+          [
+            {
+              text: 'Previous',
+              callback_data: 'toggle-' + previous,
+            },
+            {
+              text: 'Next',
+              callback_data: 'toggle-' + next,
+            },
+          ],
+        ]
+  var finalkeyboard = [
+          [
+            {
+              text: 'Previous',
+              callback_data: 'toggle-' + previous,
+            },
+          ]
+  ]
+  var firstkeyboard = [
+          [
+            {
+              text: 'Next',
+              callback_data: 'toggle-' + next,
+            },
+          ],
+  ]
+  var str = getTestView(index);
+  if (str === 'Showing Active Requests\n\n') {
+    updateText(userID, message_id, "That's all the active requests!", {inline_keyboard: finalkeyboard});
+  } else if (index === "0") {
+    updateText(userID, message_id, getTestView(index), {inline_keyboard: firstkeyboard});
+  } else {    
+    updateText(userID, message_id, getTestView(index), {inline_keyboard: keyboard});
+  }
+}
 
-    var active_requests = '';
+function getTestView(index) {
+    var rangeValues = requestRange();
+    var str = 'Showing Active Requests\n\n';
+    var count = 0;
+    var max = 3;
+  
+    for (i = 0; i < requestLastRow() - 1; i++) {
+      var req = requestInfo(rangeValues[i][0]);
+      var user = userInfo(req.userId);
     
-    for (i = 0; i < lastRow - 1; i++) {
-        var ref = rangeValues[i][0]
-        var request = rangeValues[i][1];
-        var credit = rangeValues[i][2];
-      
-        var request_date = rangeValues[i][5];
-        var request_time = rangeValues[i][6];
-        var remark = rangeValues[i][7];
-      
-        var curr_user = userExists(rangeValues[i][3]);
-        var name = curr_user.name;
-      if (rangeValues[i][4] === 'Available') {
-        active_requests = active_requests + ref + '. ' + request + " - " + credit + " credit(s) \nmade by " + name + 
-          " at " + request_time.slice(0, -2) + ', ' + request_date.slice(0, -2) + ' ' + '\n' + 'Remark: ' + remark + '\n\n';
-      }  
+      if (req.status === "Available") {
+        if (count >= index*max && count < (index*max + max)) { 
+          str += req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + req.remark + "\n\n";
+        }
+        count++;
+      }
     }
-    sendText(userID, active_requests);
+    return str;
 }
