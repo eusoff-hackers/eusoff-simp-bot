@@ -25,5 +25,5 @@ function sendLeaderboard(chatID, userID) {
             },
           ]
   ]
-  sendText(chatID, getLeaderboardRow(userID), {inline_keyboard: backkeyboard});
+  sendText(chatID, getLeaderboardRow(userID), { inline_keyboard: backkeyboard });
 }
