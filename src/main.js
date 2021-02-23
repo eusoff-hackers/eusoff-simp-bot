@@ -17,7 +17,7 @@ function doPost(e) {
         makeRequest(idCallback, data);       
       } else if (command === 'cancel') {
         sendText(idCallback, cancelRequest(data.split('-')[1], userID));
-        sendMenu(userID);
+//         sendMenu(userID);
       } else if (command === 'take_request') {
         takeRequest(idCallback, data);
       } else if (command === 'complete') {
@@ -48,13 +48,13 @@ function doPost(e) {
           sendText(userId, "You are not registered, to sign up use /register");
         }
       } else if (text === '/start' || text === '/help') {
-        sendMenu(chatID);
+        sendMenu(userId);
       } else if (text === '/view') {
         view(userId);
       } else if (text === '/cancel') {
         if (viewOwn(userId) === false) {
             sendText(chatID, 'You have no requests to cancel');
-            sendMenu(userID);
+//             sendMenu(userId);
         } else {
             sendText(chatID, 'Which request do you want to cancel?', viewOwn(userId));
         }
@@ -77,20 +77,20 @@ function doPost(e) {
         setUserSubscribe(userId, "No");        
         sendText(userId, "Unsubscribed :( Who hurt you?");        
       } else if (text === '/leaderboard') {
-        sendLeaderboard(chatID, userID);
+        sendLeaderboard(chatID, userId);
       } else if (text === '/simp_leaderboard') {
-        sendSimpLeaderboard(chatID, userID);
+        sendSimpLeaderboard(chatID, userId);
       } else if (text === '/simp') {
         if (processSimpRequest(userId) === false) {
             sendText(chatID, 'You have no requests to take');
           } else {
             sendText(chatID, 'Which request do you want to take?', processSimpRequest(userId));
           }
-      } else if (text.slice(0, 3) === '/t_') {
-        var ref = parseInt(text.substr(3));
+      } else if (text.slice(0, 6) === '/take_') {
+        var ref = parseInt(text.substr(6));
         takeRequestTest(userId, ref);
-      } else if (text.slice(0, 3) === '/s_') {
-        var ref = parseInt(text.substr(3));
+      } else if (text.slice(0, 6) === '/simp_') {
+        var ref = parseInt(text.substr(6));
         takeSimpRequestTest(userId, ref)
       } else if (text === '/check') {
         sendText(userId, check(userId));
