@@ -57,7 +57,7 @@ function takeSimpRequest(userID, data) {
       setRequestSlave(refId, userID);
 
       sendText(userID, 'Request taken: ' + req.request + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark + '\nWhat a simp ( ͡° ͜ʖ ͡°)...');
-      sendMenu(userID);
+//       sendMenu(userID);
     }
 }
 
