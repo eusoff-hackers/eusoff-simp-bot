@@ -45,7 +45,7 @@ function takeRequest(userID, data) {
       var str2 = "Request taken by " + slave.name + " from " + slave.room;
       
       sendText(userID, str1);
-      sendMenu(userID);
+//       sendMenu(userID);
       sendText(requestor_id, str2);
     }
 }
