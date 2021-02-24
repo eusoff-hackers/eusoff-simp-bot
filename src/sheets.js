@@ -56,6 +56,17 @@ function setUserSubscribe(userId, state) {
   }
 }
 
+function setUserTeleHandle(userId, userTelegramHandle) {
+  var telegramhandle = "@" + userTelegramHandle;
+
+  for (j = 0; j < usersLastRow - 1; j++) {
+    if (usersRangeValues[j][0] === userId) {
+      Users.getRange(j + 2, 7).setValue(telegramhandle);
+      return;
+    }
+  }
+}
+
 function setUserOngoing(userId, state) {
   for (j = 0; j < usersLastRow - 1; j++) {
     if (usersRangeValues[j][0] === userId) {
