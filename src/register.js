@@ -1,4 +1,4 @@
-function register(userID, userTelegramHandle) {
+function register(userID) {
     var user = userInfo(userID);
     var text = 'failed';
   
