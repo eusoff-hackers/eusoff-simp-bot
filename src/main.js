@@ -108,7 +108,7 @@ function doPost(e) {
         sendText(userId, getProfile(userId)[0], {inline_keyboard: getProfileKeyboard(1)});
       } else {
         if (check_name_room_validity(text)) {
-          addUser(contents);
+          addUser(contents, userTelegramHandle);
         } else if (userInfo(userId).ongoing === 1) {
           broadcast(userId, text);
         } else {
