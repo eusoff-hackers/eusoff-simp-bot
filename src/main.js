@@ -40,6 +40,12 @@ function doPost(e) {
       var chatID = contents.message.chat.id;
       var text = contents.message.text;
       var userId = contents.message.from.id;
+      var userTelegramHandle = contents.message.chat.username;
+      
+      // update telegram handle if user exists
+      if (Object.getOwnPropertyNames(userInfo(userId)).length !== 0) {
+        updateTeleHandle(userId, userTelegramHandle);
+      }
       
       if (text === '/register') {
         register(userId);
