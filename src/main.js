@@ -159,7 +159,8 @@ function getMenu() {
           "/cancel - To delete your current requests that are not taken \n\n" +
           "/leaderboard - To view the leaderboards \n\n" +
           "/subscribe - To get notified of new favours \n" + 
-          "/unsubscribe - To unsubscribe from updates \n";
+          "/unsubscribe - To unsubscribe from updates \n" + 
+          "/support - To report a bug/receive assistance \n";
   return str;
 }
 
