@@ -16,15 +16,15 @@ function addUserToTrack(userId) {
 }
 
 function calculateCaps() {
-  var num = userLastRow();
-  for (i = 2; i <= num; i++) {
-    var sum = 0;
-    for (j = 2; j <= num; j++) {
-      var n = Track.getRange(i, j).getValues()[0][0];
-      sum += (n > cap) ? 5 : n;
-    }
-    Users.getRange(i, 9).setValue(sum);
-  }
+  // var num = userLastRow();
+  // for (i = 2; i <= num; i++) {
+  //   var sum = 0;
+  //   for (j = 2; j <= num; j++) {
+  //     var n = Track.getRange(i, j).getValues()[0][0];
+  //     sum += (n > cap) ? 5 : n;
+  //   }
+  //   Users.getRange(i, 9).setValue(sum);
+  // }
 }
 
 function inc(simp, requestor) {

@@ -35,7 +35,8 @@ function cancelRequest(row_data, userID) {
     if (req.userId === userID && req.status === 'Available') {
       setRequestStatus(refId, "Cancelled");
       var pending = req.pending;
-      var newCredits = total_credits + pending;
+      // Look in this; Add req.credits or req.pending? 
+      var newCredits = total_credits + req.credits;
       setRequestPending(refId, 0);
       setUserCredits(userID, newCredits);
 

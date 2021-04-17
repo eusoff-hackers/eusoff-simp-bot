@@ -1,12 +1,12 @@
 function getDateTime() {
   var dateObj = new Date();
   var month = parseInt(dateObj.getMonth() + 1);
-  var day = parseInt(String(dateObj.getDate() + 1).padStart(2, '0'));
+  var day = parseInt(String(dateObj.getDate()).padStart(2, '0'));
   var year = parseInt(dateObj.getFullYear());
   var hour = parseInt(dateObj.getHours());  
-//   var hour = (parseInt(dateObj.getHours()) + 1 > 12) 
-//               ? parseInt(dateObj.getHours()) + 1 - 12 
-//               : parseInt(dateObj.getHours()) + 1 + 12;
+  // var hour = (parseInt(dateObj.getHours()) + 1 > 12) 
+  //             ? parseInt(dateObj.getHours()) + 1 - 12 
+  //             : parseInt(dateObj.getHours()) + 1 + 12;
   var min  = parseInt(dateObj.getMinutes());
 
   var date = day + '/' + month  + '/'+ year;

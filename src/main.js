@@ -31,7 +31,7 @@ function doPost(e) {
       } else if (command === 'toggleView') {
         updateView(idCallback, data, message_id);
       } else if (command === 'back') {
-        updateText(idCallback, message_id, getMenu());
+        updateText(idCallback, message_id, getInteractiveMenu()[0], {inline_keyboard: getMenuKeyboard(1)});
       } else if (command === 'toggleProfile') {
         updateProfile(idCallback, data, message_id);
       } else if (command === 'register') {
@@ -40,12 +40,34 @@ function doPost(e) {
         view(idCallback, data)
       } else if (command === "toggleTut") {
         updateTutorial(idCallback, data, message_id);
+      } else if (command === 'verify') {
+        setUserIncomingPhoto(userID, "1");
+        var data_arr = data.split('-');
+        var refId = parseInt(data_arr[1]);
+        addVerifyRow(refId);
+        sendText(userID, "Please send the picture now!");
+      } else if (command === "toggleMenu") {
+        updateInteractiveMenu(idCallback, data, message_id);
       }
 
     } else if (contents.message) {
       var chatID = contents.message.chat.id;
-      var text = contents.message.text;
       var userId = contents.message.from.id;
+
+      if (userInfo(userId).incoming === 1) {  
+        try {
+          var photoid = contents.message.photo[0].file_id;
+          verify(userId, photoid);
+          return;
+        }
+        catch(err) {
+          setUserIncomingPhoto(userId, "0");
+          sendText(userId, "Picture lah! Please /verify again and send a picture :)");
+          return;
+        }    
+      }
+      
+      var text = contents.message.text;
       var userTelegramHandle = contents.message.chat.username;
       
       // update telegram handle if user exists
@@ -70,7 +92,7 @@ function doPost(e) {
         begin(userId);
       } else if (text === '/help') {
         // sendMenu(userId);
-        sendTutorial(userId)
+        sendTutorial(userId);
       } else if (text === '/view') {
         // view(userId);
         chooseViewCategory(userId);
@@ -124,6 +146,17 @@ function doPost(e) {
         sendText(885582521, helpmessage);
         sendText(285483408, helpmessage);
         sendText(userId, "Fret not, my worrisome friend. A trusted figure will contact you shortly.");
+      } else if (text === '/unregister') {
+        var helpmessage = "@" + userTelegramHandle + " wants to unregister sigh :(";
+        sendText(402947214, helpmessage);
+        sendText(1165718697, helpmessage);
+        sendText(885582521, helpmessage);
+        sendText(285483408, helpmessage);
+        sendText(userId, "We are sad to see you go:( You're request will be attended to shortly!");
+      } else if (text === '/verify') {
+        requestsToVerify(userId);
+      // } else if (text === '/exertingpowerbelike') {
+      //   forcebroadcast();
       } else {
         if (check_name_room_validity(text)) {
           addUser(contents, userTelegramHandle);
@@ -139,6 +172,8 @@ function doPost(e) {
 function setWebhook() {
     var url = telegramUrl + "/setWebhook?url=" + webAppUrl;
     var response = UrlFetchApp.fetch(url);
+    console.log(response);
+    return ContentService.createTextOutput('200 OK');
 }
 
 function deleteWebhook() {
@@ -163,15 +198,17 @@ function sendText(chatId, text, keyBoard) {
 function getMenu() {
   var str = "Welcome to Eusoff's Favours Bot! \n\n" + 
           "/profile - To check your profile details  \n\n" +
-          "/view - To view, take or simp for active requests  \n" + 
+          "/view - To view and take up active requests  \n" + 
           "/make_request - To make a request \n\n" + 
           "/leaderboard - To view the leaderboards \n" +
-          "/subscribe - To get notified of new favours \n" + 
+          "/subscribe - To get notified of new favours come in\n" + 
           "/unsubscribe - To unsubscribe from updates \n\n" + 
           "/complete - To mark your request as complete \n" +
           "/cancel - To delete your current requests that are not taken \n\n" + 
+          "/verify - To send picture verification of completing a favour\n\n" +
           "/support - To report a bug/receive assistance \n" +
-          "/help - To read the tutorial again."
+          "/help - To read the tutorial again \n" +
+          "/unregister - To unregister from this bot";
   return str;
 }
 
@@ -271,6 +308,6 @@ function begin(userId) {
   if (Object.getOwnPropertyNames(user).length === 0) {
     sendGuide(userId)
   } else {
-    sendMenu(userId);
+    sendInteractiveMenu(userId);
   }
 }

@@ -7,13 +7,14 @@ function getLeaderboardRow(userID) {
   var rangeValues = searchRange.getValues();
   var result = "Leaderboard 👑".bold() + '\n\n';
   
-  for (i = 0; i < 3; i++) {
+  for (i = 0; i < 10; i++) {
       var name = rangeValues[i][0];
       var room = rangeValues[i][1];
       var totalCredits = rangeValues[i][2];
-      result = result + (i+1).toString() + ". " + name + " (" + room + ") " +  ": " + totalCredits + " Credits" + '\n';
+      var pts = rangeValues[i][9];
+      result = result + (i+1).toString() + ". " + name + " (" + room + ") " +  ": " + pts + " Points" + '\n';
   } 
-  return result; 
+  return result + "\n\n *Please note that final rankings may slightly differ due to checks and added metrics taken into account."; 
 }
 
 function sendLeaderboard(chatID, userID) {

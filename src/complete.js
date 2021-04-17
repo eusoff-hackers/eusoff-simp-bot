@@ -33,13 +33,14 @@ function completeRequest(userID, data) {
     var pending = parseInt(req.pending);
     var new_credits = parseInt(slave.total_credits) + pending;
     var user = userInfo(userID);
+    var new_gained = parseInt(slave.gained) + pending;
 
     if (pending === 0) {      
       setUserSimpCount(slave.userId, slave.simp_count + 1);
       setRequestStatus(refId, "Completed");
       setRequestPending(refId, 0);
       setUserCredits(req.slaveId, new_credits);
-      inc(locateUserRow(req.slaveId), locateUserRow(userID));
+      // inc(locateUserRow(req.slaveId), locateUserRow(userID));
 
       sendText(userID, 'You have confirmed the completion: '.bold() + '\nRequest: ' + req.request + '\nSimped by: ' + slave.name + ' (' + slave.room + ') ' + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark);
       sendText(slave.userId, 'Thank you for simping for ' + user.name + '\nRequest: ' + req.request + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark);
@@ -47,10 +48,11 @@ function completeRequest(userID, data) {
       setRequestStatus(refId, "Completed");
       setRequestPending(refId, 0);
       setUserCredits(req.slaveId, new_credits);
-      inc(locateUserRow(req.slaveId), locateUserRow(userID));
+      // inc(locateUserRow(req.slaveId), locateUserRow(userID));
+      setUserGained(req.slaveId, new_gained);
 
       sendText(userID, 'You have confirmed the completion: '.bold() + '\nRequest: ' + req.request + '\nTaken by: ' + slave.name + ' (' + slave.room + ') \nCredit(s): ' + req.credits + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark);
-      sendText(slave.userId, 'Thank you for helping ' + user.name + "\nYou've received " + req.credits + ' credit(s)' + '\nYou currently have ' + user.total_credits + ' credit(s)');
+      sendText(slave.userId, 'Thank you for helping ' + user.name + "\nYou've received " + req.credits + ' credit(s)' + '\nYou currently have ' + new_credits + ' credit(s)');
     }
 }
 

@@ -20,7 +20,7 @@ function removeOldPosts() {
     // }
 
     if (isOldPostByHour(current, requestDate, requestTime, recycleHours) && request.status === "Available") {
-      setRequestStatus(i, "Cancelled");
+      setRequestStatus(i, "Old");
     }
   }
 }

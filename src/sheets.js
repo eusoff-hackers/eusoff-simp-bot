@@ -1,3 +1,5 @@
+var sheet_id = "1MiPByQzVG-Zwe0vDSYjFSU-gfTt5uwH8JKQY61tk9JQ";
+
 var Requests = SpreadsheetApp.openById(sheet_id).getSheetByName('Active_Request');
 var Users = SpreadsheetApp.openById(sheet_id).getSheetByName('Users');
 
@@ -76,6 +78,24 @@ function setUserOngoing(userId, state) {
   }
 }
 
+function setUserIncomingPhoto(userId, state) {
+  for (j = 0; j < usersLastRow - 1; j++) {
+    if (usersRangeValues[j][0] === userId) {
+      Users.getRange(j + 2, 10).setValue(state);
+      return;
+    }
+  }
+}
+
+function setUserGained(userId, state) {
+  for (j = 0; j < usersLastRow - 1; j++) {
+    if (usersRangeValues[j][0] === userId) {
+      Users.getRange(j + 2, 11).setValue(state);
+      return;
+    }
+  }
+}
+
 function setRequestStatus(refId, stat) {
   Requests.getRange(refId + 1, 5).setValue(stat);
 }
@@ -92,7 +112,11 @@ function setRequestRemark(refId, stat) {
   Requests.getRange(refId + 1, 8).setValue(stat);
 }
 
-function setRequestString(refId, stat) {
+// function setRequestString(refId, stat) {
+//   Requests.getRange(refId + 1, 11).setValue(stat);
+// }
+
+function setRequestVerified(refId, stat) {
   Requests.getRange(refId + 1, 11).setValue(stat);
 }
 
@@ -126,6 +150,9 @@ function userInfo(userId) {
       user.subscribed = usersRangeValues[j][5];
       user.tele = usersRangeValues[j][6];
       user.ongoing = usersRangeValues[j][7];
+      user.capped = usersRangeValues[j][8];
+      user.incoming = usersRangeValues[j][9];
+      user.gained = usersRangeValues[j][10];
       break;
     }
   }
@@ -151,16 +178,17 @@ function requestInfo(refId) {
       request.remark = requestsRangeValues[j][7];
       request.pending = parseInt(requestsRangeValues[j][8]);
       request.slaveId = requestsRangeValues[j][9];
+      request.verified = requestsRangeValues[j][10];
       break;
     }
   }
   return request;  
-}
+} 
 
 function newUser(userId, name, room, tele_handle) {
-  Users.appendRow([userId, name, room, 5, 0, 'No', tele_handle, "0"]);
+  Users.appendRow([userId, name, room, 8, 0, 'Yes', tele_handle, "0", "0", "0", "0"]);
 }
 
 function newRequest(refId, request, credits, userId, status, date, time, remark, pend, slave, str) {
-  Requests.appendRow([refId, request, credits, userId, status, date, time, remark, pend, slave, str]);
+  Requests.appendRow([refId, request, credits, userId, status, date, time, remark, pend, slave, "No"]);
 }

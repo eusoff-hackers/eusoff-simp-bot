@@ -1,4 +1,5 @@
 function view(userID, data) {
+  
   var data_arr = data.split('-');
   var category = data_arr[1];
 
@@ -11,6 +12,7 @@ function view(userID, data) {
             },
           ],
   ]
+
   sendText(userID, getTestView(0, category), {inline_keyboard: keyboard});
 }
 
@@ -54,7 +56,7 @@ function updateView(userID, data, message_id) {
   var text = (category === "All")
               ? "Showing All Active Requests\n\n"
               : "Showing All Active " + category + " Requests\n\n";
-  if (str === text) {
+  if (str === text.bold()) {
     var endText = (category === "All")
                     ? "That's all the active requests!"
                     : "That's all the active " + category + " requests!";
@@ -84,18 +86,27 @@ function getTestView(index, category) {
           if (count >= index*max && count < (index*max + max)) { 
           str += req.ref + ". " + req.request + " - " + req.credits + " credit(s)\nmade by " + 
             user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + "\nRemark: " + 
-            req.remark + "\n" + "Take Request: /take_" + req.ref + "\nSimp: /simp_" + req.ref + "\n\n";
+            req.remark + "\n" + "Take Request: /take_" + req.ref + "\n\n";
           }
           count++;
+          //"\nSimp: /simp_" + req.ref +
         }
       } else {
+        
         if (req.status === "Available" && req.request === category) {
           if (count >= index*max && count < (index*max + max)) { 
+            // sendText(1165718697, "here" + category);
             str += req.ref + ". " + req.remark + " - " + req.credits + " credit(s)\nmade by " + 
             user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + 
-            "\n" + "Take Request: /take_" + req.ref + "\nSimp: /simp_" + req.ref + "\n\n";
+            "\n" + "Take Request: /take_" + req.ref + "\n\n";
+
+            // debugging
+            // str += req.ref + ". " + " - " + req.credits + " credit(s)\nmade by " + 
+            // user.name + " at " + req.time.slice(0, -2) + ", " + req.date.slice(0, -2) + 
+            // "\n" + "Take Request: /take_" + req.ref + "\n\n";
           }
           count++;
+          //"\nSimp: /simp_" + req.ref + 
         }
       }
     }
@@ -125,8 +136,8 @@ function chooseViewCategory(userID) {
           ],
           [
             {
-              text: 'Open Gate',
-              callback_data: 'viewCategory-Open_Gate',
+              text: 'Print Documents',
+              callback_data: 'viewCategory-Print',
             },
           ],
           [
