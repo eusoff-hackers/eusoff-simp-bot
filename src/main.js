@@ -38,6 +38,8 @@ function doPost(e) {
         register(idCallback);
       } else if (command === 'viewCategory') {
         view(idCallback, data)
+      } else if (command === "toggleTut") {
+        updateTutorial(idCallback, data, message_id);
       }
 
     } else if (contents.message) {
@@ -67,7 +69,8 @@ function doPost(e) {
         // sendMenu(userId);
         begin(userId);
       } else if (text === '/help') {
-        sendMenu(userId);
+        // sendMenu(userId);
+        sendTutorial(userId)
       } else if (text === '/view') {
         // view(userId);
         chooseViewCategory(userId);
@@ -161,13 +164,14 @@ function getMenu() {
   var str = "Welcome to Eusoff's Favours Bot! \n\n" + 
           "/profile - To check your profile details  \n\n" +
           "/view - To view, take or simp for active requests  \n" + 
-          "/make_request - To make a request \n" + 
-          "/complete - To mark your request as complete \n" +
-          "/cancel - To delete your current requests that are not taken \n\n" +
-          "/leaderboard - To view the leaderboards \n\n" +
+          "/make_request - To make a request \n\n" + 
+          "/leaderboard - To view the leaderboards \n" +
           "/subscribe - To get notified of new favours \n" + 
-          "/unsubscribe - To unsubscribe from updates \n" + 
-          "/support - To report a bug/receive assistance \n";
+          "/unsubscribe - To unsubscribe from updates \n\n" + 
+          "/complete - To mark your request as complete \n" +
+          "/cancel - To delete your current requests that are not taken \n\n" + 
+          "/support - To report a bug/receive assistance \n" +
+          "/help - To read the tutorial again."
   return str;
 }
 

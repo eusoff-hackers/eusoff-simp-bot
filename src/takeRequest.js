@@ -31,6 +31,7 @@ function takeRequest(userID, refId) {
 
     var requestor_id = rangeValues[refId - 1][3];
     var req = requestInfo(rangeValues[refId - 1][0]);
+    var requestor = userInfo(requestor_id);
 
     if (req.status == "Taken") {
       sendText(userID, "Sorry, this request has already been taken. Too slow!");
@@ -42,8 +43,14 @@ function takeRequest(userID, refId) {
       setRequestPending(refId, req.credits); 
 
       var slave = userInfo(userID);
-      var str1 = 'You have taken a new request!'.bold() + '\nRequest taken: ' + req.request + '\nCredit(s): ' + req.credits + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark;
-      var str2 = 'Your request has been taken'.bold() + '\nRequest taken: ' + req.request + '\nTaken by: ' + slave.name + ' (' + slave.room + ') \nCredit(s): ' + req.credits + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark;
+      var str1 = 'You have taken a new request!'.bold() + '\nRequest taken: ' + req.request + 
+      '\nCredit(s): ' +   req.credits + '\nRef number: ' + req.ref + '\nRemark: ' + req.remark 
+      + '\nContact ' + requestor.tele + ' to find out more';
+
+      var str2 = 'Your request has been taken'.bold() + '\nRequest taken: ' + req.request + 
+      '\nTaken by: ' + slave.name + ' (' + slave.room + ') \nCredit(s): ' + req.credits + 
+      '\nRef number: ' + req.ref + '\nRemark: ' + req.remark + '\nContact ' + 
+      slave.tele + ' to find out more';
       
       sendText(userID, str1);
       sendText(requestor_id, str2);    

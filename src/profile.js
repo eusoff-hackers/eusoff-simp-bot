@@ -24,9 +24,9 @@ function getProfile(userID) {
   }
 
   if (credits === 0) {
-    strFinal = "Hi " + name + " (" + room + ")! " + "You have 0 credits:( Do some good! \nSimp Count: " + simp;
+    strFinal = "Hi " + name + " (" + room + ") !\n" + "You have 0 credits:( Do some good! \nSimp Count: " + simp;
   } else {
-    strFinal = "Hi " + name + " (" + room + ")! " + "You have " + credits + " credits!\nSimp Count: " + simp;
+    strFinal = "Hi " + name + " (" + room + ") !\n" + "You have " + credits + " credits!\nSimp Count: " + simp;
   }
   var strArr = [strFinal, strReqMade, strReqTaken];
   return strArr;
